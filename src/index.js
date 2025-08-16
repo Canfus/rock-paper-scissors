@@ -3,11 +3,19 @@ import { Settings } from "./utils/apply-settings.js";
 import { createElements } from "./utils/create-elements.js";
 
 const canvas = new Canvas();
-const objects = createElements(canvas);
+let objects = [];
 
-let GAME_STATUS = "PLAYING";
+let GAME_OVER = false;
+
+window.addEventListener("resize", () => {
+  canvas.width = "100vw";
+  canvas.height = "100vh";
+});
 
 function init() {
+  GAME_OVER = false;
+  objects = createElements(canvas);
+
   canvas.backgroundColor = Settings.BACKGROUND_COLOR;
   canvas.width = "100vw";
   canvas.height = "100vh";
@@ -26,6 +34,8 @@ function draw(elements) {
   const isFinished = objs.filter((obj) => obj.length).length <= 1;
 
   if (isFinished) {
+    GAME_OVER = true;
+
     const { context, width, height } = canvas;
 
     context.font = "16px Arial";
@@ -33,7 +43,20 @@ function draw(elements) {
     context.textAlign = "center";
     context.fillText(`Победитель: ${objects[0].value}`, width / 2, height / 2);
 
-    GAME_STATUS = "FINISHED";
+    const abortController = new AbortController();
+    const restart = document.createElement("button");
+    restart.id = "restart";
+    restart.innerText = "Повторить";
+    restart.addEventListener(
+      "click",
+      () => {
+        init();
+        abortController.abort();
+        restart.parentNode.removeChild(restart);
+      },
+      { signal: abortController.signal },
+    );
+    document.body.appendChild(restart);
 
     return;
   }
@@ -73,7 +96,7 @@ function main() {
   update();
   draw(elements);
 
-  if (GAME_STATUS !== "FINISHED") {
+  if (!GAME_OVER) {
     requestAnimationFrame(main);
   }
 }

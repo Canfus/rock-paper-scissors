@@ -14,63 +14,44 @@ export function createElements(canvas) {
   /** @type {import("../entities/base.js").Base[]} */
   const elements = [];
 
-  function findFreePosition(radius, maxAttempts = 50) {
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const x =
-        Math.floor(Math.random() * (canvas.width - 2 * radius)) + radius;
-      const y =
-        Math.floor(Math.random() * (canvas.height - 2 * radius)) + radius;
-
-      let isPositionFree = true;
-      for (const existingElement of elements) {
-        const dx = x - existingElement.position.x;
-        const dy = y - existingElement.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const minDistance = radius + existingElement.radius + 5;
-
-        if (distance < minDistance) {
-          isPositionFree = false;
-          break;
-        }
-      }
-
-      if (isPositionFree) {
-        return { x, y };
-      }
-    }
-
-    return {
-      x: Math.floor(Math.random() * (canvas.width - 2 * radius)) + radius,
-      y: Math.floor(Math.random() * (canvas.height - 2 * radius)) + radius,
-    };
-  }
-
   for (let i = 0; i < MAX_ELEMENTS; i++) {
-    const position = findFreePosition(Settings.SIZE);
+    const x = Math.floor(Math.random() * canvas.width);
+    const y = Math.floor(Math.random() * canvas.height);
+
+    const xDir = Math.random() > 0.5 ? 1 : -1;
+    const yDir = Math.random() > 0.5 ? 1 : -1;
 
     const element = new Rock(
-      new Vector(position.x, position.y),
-      new Vector(SPEED[0], SPEED[1]),
+      new Vector(x, y),
+      new Vector(SPEED[0] * xDir, SPEED[1] * yDir),
     );
     elements.push(element);
   }
 
   for (let i = 0; i < MAX_ELEMENTS; i++) {
-    const position = findFreePosition(Settings.SIZE);
+    const x = Math.floor(Math.random() * canvas.width);
+    const y = Math.floor(Math.random() * canvas.height);
+
+    const xDir = Math.random() > 0.5 ? 1 : -1;
+    const yDir = Math.random() > 0.5 ? 1 : -1;
 
     const element = new Paper(
-      new Vector(position.x, position.y),
-      new Vector(SPEED[0], SPEED[1]),
+      new Vector(x, y),
+      new Vector(SPEED[0] * xDir, SPEED[1] * yDir),
     );
     elements.push(element);
   }
 
   for (let i = 0; i < MAX_ELEMENTS; i++) {
-    const position = findFreePosition(Settings.SIZE);
+    const x = Math.floor(Math.random() * canvas.width);
+    const y = Math.floor(Math.random() * canvas.height);
+
+    const xDir = Math.random() > 0.5 ? 1 : -1;
+    const yDir = Math.random() > 0.5 ? 1 : -1;
 
     const element = new Scissors(
-      new Vector(position.x, position.y),
-      new Vector(SPEED[0], SPEED[1]),
+      new Vector(x, y),
+      new Vector(SPEED[0] * xDir, SPEED[1] * yDir),
     );
     elements.push(element);
   }

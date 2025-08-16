@@ -30,6 +30,8 @@ export class Vector {
   multiply(scalar) {
     this.x *= scalar;
     this.y *= scalar;
+
+    return this;
   }
 
   /**

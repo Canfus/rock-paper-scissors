@@ -79,6 +79,7 @@ export class Base {
     const dx = this.position.x - other.position.x;
     const dy = this.position.y - other.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
+
     return distance < this.radius + other.radius;
   }
 
@@ -100,32 +101,35 @@ export class Base {
 
       this.position.subtract(separationVector);
       other.position.add(separationVector);
+
       return;
     }
 
     const normal = collisionVector.normalize();
 
     const overlap = this.radius + other.radius - distance;
-    const buffer = 2;
+    const buffer = 1;
     const totalSeparation = overlap + buffer;
     const separationVector = normal.copy();
+
     separationVector.multiply(totalSeparation / 2);
 
     this.position.subtract(separationVector);
     other.position.add(separationVector);
 
-    const restitution = 0.8;
+    const restitution = 0.3;
 
     const thisVelDotNormal = this.velocity.dot(normal);
     const reflectedThis = normal.copy();
-    reflectedThis.multiply(2 * thisVelDotNormal);
+
+    reflectedThis.multiply(thisVelDotNormal);
     this.velocity.subtract(reflectedThis);
     this.velocity.multiply(restitution);
 
-    const reverseNormal = normal.copy();
-    reverseNormal.multiply(-1);
+    const reverseNormal = normal.copy().multiply(-1);
     const otherVelDotNormal = other.velocity.dot(reverseNormal);
     const reflectedOther = reverseNormal.copy();
+
     reflectedOther.multiply(2 * otherVelDotNormal);
     other.velocity.subtract(reflectedOther);
     other.velocity.multiply(restitution);
